@@ -40,8 +40,6 @@
 
 @end
 
-//TODO: Clean up code
-
 @implementation UIGuidedViewNode
 
 - (instancetype)init {
