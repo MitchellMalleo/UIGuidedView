@@ -1,6 +1,6 @@
 # UIGuidedView
 
-`![](https://github.com/MitchellMalleo/UIGuidedView/blob/master/uiGuidedView.gif)` </br>
+![](https://github.com/MitchellMalleo/UIGuidedView/blob/master/uiGuidedView.gif)
 
 ## Description
 
