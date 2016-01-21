@@ -79,4 +79,4 @@ Examples are included in the project files. Enjoy. (:
 
 ## License
 
-`UIGuidedView` is available under the `MIT` license. See the LICENSE file for more info.
+UIGuidedView is available under the MIT license. See the LICENSE file for more info.
