@@ -1,7 +1,6 @@
 # UIGuidedView
 
-`![](https://github.com/linkToYourImage.png)` </br>
-`![](https://github.com/linkToYourGif.gif)` </br>
+`![](https://github.com/MitchellMalleo/UIGuidedView/blob/master/uiGuidedView.gif)` </br>
 
 ## Description
 
