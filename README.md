@@ -14,7 +14,7 @@ UIGuidedView is a simple control designed for guiding a user through a controlle
 
 ## Installation
 
-1. UIGuidedView can be installed via [Cocoapods](http://cocoapods.org/) by adding `pod 'UIGuidedView'` to your podfile, or you can manually add `UIGuidedView.h/m` and `UIBezierPath+Circle.h/.m` into your project.
+1. UIGuidedView can be installed via [CocoaPods](http://cocoapods.org/) by adding `pod 'UIGuidedView'` to your podfile, or you can manually add `UIGuidedView.h/m` and `UIBezierPath+Circle.h/.m` into your project.
 2. Create a `@property (strong, nonatomic) UIGuidedView *guidedView`, setup its frame, and in your class and set the guided view's dataSource. The only required method to implement is `- (NSInteger)numberOfNodesForGuidedView:(UIGuidedView *)view;`
 
 		//YourViewController.m
