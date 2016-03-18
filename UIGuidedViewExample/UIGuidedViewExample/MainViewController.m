@@ -41,6 +41,10 @@
     
     NSLog(@"Will single transition from %li to %li", (long)index, (long)toIndex);
     
+//    if (toIndex == 2 && direction != UIGuidedViewAnimationDirectionForwards){
+//        return NO;
+//    }
+    
     return YES;
 }
 
