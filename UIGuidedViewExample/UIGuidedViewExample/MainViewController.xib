@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MainViewController">
@@ -48,15 +48,18 @@
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="5x3-0F-pYR" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="0ht-Hx-4s2"/>
+                <constraint firstItem="5x3-0F-pYR" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="9GP-zE-PRf"/>
                 <constraint firstAttribute="trailing" secondItem="5x3-0F-pYR" secondAttribute="trailing" id="9tO-xS-Cze"/>
+                <constraint firstAttribute="trailing" secondItem="5x3-0F-pYR" secondAttribute="trailing" id="CKw-y4-u4j"/>
                 <constraint firstAttribute="bottom" secondItem="5x3-0F-pYR" secondAttribute="bottom" id="Eew-Uq-gW2"/>
                 <constraint firstItem="IL7-Vu-Oca" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="68" id="FaR-hi-TWl"/>
                 <constraint firstItem="HdQ-fL-gyR" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="255" id="GGt-21-dkK"/>
                 <constraint firstItem="IL7-Vu-Oca" firstAttribute="top" secondItem="HdQ-fL-gyR" secondAttribute="bottom" constant="10" id="TSy-Ve-MVG"/>
                 <constraint firstItem="IL7-Vu-Oca" firstAttribute="leading" secondItem="HdQ-fL-gyR" secondAttribute="leading" id="WSf-DH-vAL"/>
+                <constraint firstAttribute="bottom" secondItem="5x3-0F-pYR" secondAttribute="bottom" id="Xrd-EU-b66"/>
                 <constraint firstAttribute="trailing" secondItem="IL7-Vu-Oca" secondAttribute="trailing" constant="68" id="wPi-Je-cFc"/>
             </constraints>
-            <point key="canvasLocation" x="-1049" y="644"/>
+            <point key="canvasLocation" x="-356" y="601"/>
         </view>
     </objects>
 </document>

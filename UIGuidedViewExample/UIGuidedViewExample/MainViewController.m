@@ -23,6 +23,7 @@
     
     self.guidedView.dataSource = self;
     self.guidedView.delegate = self;
+    [self.guidedView setBackgroundColor:[UIColor blueColor]];
     
     [self.segmentedControl addTarget:self action:@selector(segmentedControlWasTouched:) forControlEvents:UIControlEventValueChanged];
 }
@@ -40,10 +41,6 @@
 - (BOOL)guidedView:(UIGuidedView *)guidedView willSingleTransitionFromIndex:(NSInteger)index toIndex:(NSInteger)toIndex inDirection:(UIGuidedViewAnimationDirection)direction{
     
     NSLog(@"Will single transition from %li to %li", (long)index, (long)toIndex);
-    
-//    if (toIndex == 2 && direction != UIGuidedViewAnimationDirectionForwards){
-//        return NO;
-//    }
     
     return YES;
 }
@@ -76,13 +73,13 @@
     NSString *title = @"";
     
     if(index == 0){
-        title = @"Choose one";
+        title = @"Choose";
     }else if (index == 1){
-        title = @"Choose another";
+        title = @"Choose again";
     }else if (index == 2){
-        title = @"Select a color";
+        title = @"Color select";
     }else if (index == 3){
-        title = @"Select a price";
+        title = @"Price select";
     }else if (index == 4){
         title = @"Confirm";
     }

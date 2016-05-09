@@ -21,7 +21,7 @@
 #define kDirectionKey @"animationDirection"
 #define kNodeSelection @"selectNode"
 #define kNodeRadius 5.2
-#define kGuidedViewPadding 60
+#define kGuidedViewPadding 35
 #define kUIGuidedViewNodeTitleLabelYValue 25
 #define kDidFailBackwardsTransition @"didFailBackwardsTransition"
 

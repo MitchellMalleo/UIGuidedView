@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "UIGuidedView"
-  s.version          = "0.0.2"
+  s.version          = "0.0.3"
   s.summary          = "A simple control designed for guiding a user through a controlled flow"
   s.homepage         = "https://github.com/MitchellMalleo/UIGuidedView"
   s.license          = 'MIT'
