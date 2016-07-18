@@ -23,7 +23,6 @@
     
     self.guidedView.dataSource = self;
     self.guidedView.delegate = self;
-    [self.guidedView setBackgroundColor:[UIColor blueColor]];
     
     [self.segmentedControl addTarget:self action:@selector(segmentedControlWasTouched:) forControlEvents:UIControlEventValueChanged];
 }

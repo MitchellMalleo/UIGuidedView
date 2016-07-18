@@ -1,4 +1,4 @@
-//
+ //
 //  UIGuidedView.m
 //  UIGuidedViewExample
 //
@@ -106,8 +106,8 @@
 @property (strong, nonatomic) UIBezierPath *line;
 @property (strong, nonatomic) UIGuidedViewNode *selectedNode;
 @property (strong, nonatomic) NSMutableArray *animationArray;
-@property (assign, nonatomic) BOOL isAnimating;
-@property (assign, nonatomic) BOOL didFailValidation;
+@property (nonatomic) BOOL isAnimating;
+@property (nonatomic) BOOL didFailValidation;
 @property (nonatomic) NSInteger numberOfNodes;
 
 @property (strong, nonatomic) NSMutableArray <__kindof UIGuidedViewNode *> *nodes;
@@ -254,8 +254,7 @@
 - (void)selectNodeAtIndex:(NSInteger)index {
     
     if(!self.isAnimating){
-        
-        self.isAnimating = YES;
+        NSLog(@"select node function");
         [self validateAnimationToNode:[self.nodes objectAtIndex:index] fromNode:self.selectedNode];
     }
 }
@@ -330,6 +329,11 @@
     self.foregroundLine.shouldRasterize = YES;
     
     [self.layer addSublayer:self.foregroundLine];
+}
+
+- (void)setIsAnimating:(BOOL)isAnimating{
+    NSLog(@"%@", isAnimating ? @"YES" : @"NO");
+    _isAnimating = isAnimating;
 }
 
 - (void)setupNodes {
@@ -440,78 +444,82 @@
 }
 
 - (void)validateAnimationToNode:(UIGuidedViewNode *)newNode fromNode:(UIGuidedViewNode *)oldNode {
+    self.isAnimating = YES;
     
-    if(newNode.index != oldNode.index){
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if(newNode.index != oldNode.index){
             
-        if(oldNode.index < newNode.index) {
-            
-            if([self canMakeMultipleTransitionToNode:newNode fromNode:oldNode inDirection:UIGuidedViewAnimationDirectionForwards]){
-            
-                for(NSInteger oldIndex = oldNode.index; oldIndex < newNode.index; oldIndex++){
+            if(oldNode.index < newNode.index) {
+                
+                if([self canMakeMultipleTransitionToNode:newNode fromNode:oldNode inDirection:UIGuidedViewAnimationDirectionForwards]){
                     
-                    NSInteger nextIndex = oldIndex + 1;
-                    
-                    if([self.delegate respondsToSelector:@selector(guidedView:willSingleTransitionFromIndex:toIndex:inDirection:)]){
+                    for(NSInteger oldIndex = oldNode.index; oldIndex < newNode.index; oldIndex++){
                         
-                        if([self.delegate guidedView:self willSingleTransitionFromIndex:oldIndex toIndex:nextIndex inDirection:UIGuidedViewAnimationDirectionForwards]){
+                        NSInteger nextIndex = oldIndex + 1;
+                        
+                        if([self.delegate respondsToSelector:@selector(guidedView:willSingleTransitionFromIndex:toIndex:inDirection:)]){
+                            
+                            if([self.delegate guidedView:self willSingleTransitionFromIndex:oldIndex toIndex:nextIndex inDirection:UIGuidedViewAnimationDirectionForwards]){
+                                
+                                if(nextIndex == newNode.index){
+                                    [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionForwards andSelectNode:YES];
+                                }else{
+                                    [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionForwards andSelectNode:NO];
+                                }
+                                
+                            } else {
+                                [self createAnimationToNode:[self.nodes objectAtIndex:oldIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionForwards andSelectNode:YES];
+                                break;
+                            }
+                            
+                        } else {
                             
                             if(nextIndex == newNode.index){
                                 [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionForwards andSelectNode:YES];
                             }else{
                                 [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionForwards andSelectNode:NO];
                             }
-                            
-                        } else {
-                            [self createAnimationToNode:[self.nodes objectAtIndex:oldIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionForwards andSelectNode:YES];
-                            break;
-                        }
-                        
-                    } else {
-                        
-                        if(nextIndex == newNode.index){
-                            [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionForwards andSelectNode:YES];
-                        }else{
-                            [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionForwards andSelectNode:NO];
                         }
                     }
                 }
-            }
-            
-        } else {
-            
-            if([self canMakeMultipleTransitionToNode:newNode fromNode:oldNode inDirection:UIGuidedViewAnimationDirectionBackwards]){
-            
-                for(NSInteger oldIndex = oldNode.index; oldIndex > newNode.index; oldIndex--){
+                
+            } else {
+                
+                if([self canMakeMultipleTransitionToNode:newNode fromNode:oldNode inDirection:UIGuidedViewAnimationDirectionBackwards]){
                     
-                    NSInteger nextIndex = oldIndex - 1;
-                    
-                    if([self.delegate respondsToSelector:@selector(guidedView:willSingleTransitionFromIndex:toIndex:inDirection:)]){
+                    for(NSInteger oldIndex = oldNode.index; oldIndex > newNode.index; oldIndex--){
                         
-                        if([self.delegate guidedView:self willSingleTransitionFromIndex:oldIndex toIndex:nextIndex inDirection:UIGuidedViewAnimationDirectionBackwards]){
+                        NSInteger nextIndex = oldIndex - 1;
+                        
+                        if([self.delegate respondsToSelector:@selector(guidedView:willSingleTransitionFromIndex:toIndex:inDirection:)]){
+                            
+                            if([self.delegate guidedView:self willSingleTransitionFromIndex:oldIndex toIndex:nextIndex inDirection:UIGuidedViewAnimationDirectionBackwards]){
+                                
+                                if(nextIndex == newNode.index){
+                                    [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionBackwards andSelectNode:YES];
+                                }else{
+                                    [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionBackwards andSelectNode:NO];
+                                }
+                                
+                            } else {
+                                [self createAnimationToNode:[self.nodes objectAtIndex:oldIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionBackwards andSelectNode:YES];
+                                break;
+                            }
+                            
+                        } else {
                             
                             if(nextIndex == newNode.index){
                                 [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionBackwards andSelectNode:YES];
                             }else{
                                 [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionBackwards andSelectNode:NO];
                             }
-                            
-                        } else {
-                            [self createAnimationToNode:[self.nodes objectAtIndex:oldIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionBackwards andSelectNode:YES];
-                            break;
-                        }
-                        
-                    } else {
-                        
-                        if(nextIndex == newNode.index){
-                            [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionBackwards andSelectNode:YES];
-                        }else{
-                            [self createAnimationToNode:[self.nodes objectAtIndex:nextIndex] fromNode:[self.nodes objectAtIndex:oldIndex] inDirection:UIGuidedViewAnimationDirectionBackwards andSelectNode:NO];
                         }
                     }
                 }
             }
         }
-    }
+    });
+    
 }
 
 - (BOOL)canMakeMultipleTransitionToNode:(UIGuidedViewNode *)node fromNode:(UIGuidedViewNode *)fromNode inDirection:(UIGuidedViewAnimationDirection)direction {
@@ -531,11 +539,9 @@
     if(!self.isAnimating && self.isTouchable){
         UITouch *touch = [[event allTouches] anyObject];
         CGPoint location = [touch locationInView:touch.view];
-        self.isAnimating = YES;
         
         for(UIGuidedViewNode *node in self.nodes){
             if(CGPathContainsPoint(node.backgroundPath.CGPath, 0, location, YES)){
-                
                 [self validateAnimationToNode:node fromNode:self.selectedNode];
             }
         }
@@ -616,8 +622,8 @@
             [self.delegate guidedView:self didMultipleTransitionFromIndex:self.selectedNode.index toIndex:newNode.index inDirection:direction];
         }
         
-        self.selectedNode = newNode;
         self.isAnimating = NO;
+        self.selectedNode = newNode;
         
     } else {
         newNode.displaying = YES;
