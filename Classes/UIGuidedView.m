@@ -1,4 +1,4 @@
- //
+//
 //  UIGuidedView.m
 //  UIGuidedViewExample
 //
@@ -20,9 +20,9 @@
 #define kOldNodeKey @"oldNode"
 #define kDirectionKey @"animationDirection"
 #define kNodeSelection @"selectNode"
-#define kNodeRadius 5.2
+#define kNodeRadius 4.5
 #define kGuidedViewPadding 35
-#define kUIGuidedViewNodeTitleLabelYValue 25
+#define kUIGuidedViewNodeTitleLabelYValue 20
 #define kDidFailBackwardsTransition @"didFailBackwardsTransition"
 
 @interface UIGuidedViewNode : NSObject
@@ -116,7 +116,7 @@
 
 #pragma mark - UIGuidedView Implementation
 
-@implementation UIGuidedView 
+@implementation UIGuidedView
 
 #pragma mark - Lifecycle
 
@@ -127,6 +127,7 @@
     if(self){
         self.selectedNode = nil;
         [self setupDefaults];
+        [self setupUI];
     }
     
     return self;
@@ -139,14 +140,10 @@
     if(self){
         self.selectedNode = nil;
         [self setupDefaults];
+        [self setupUI];
     }
     
     return self;
-}
-
-- (void)drawRect:(CGRect)rect{
-    
-    [self setupUI];
 }
 
 - (void)setupUI{
@@ -246,7 +243,7 @@
 #pragma mark - Public Methods
 
 - (NSInteger)selectedNodeIndex{
-
+    
     return self.selectedNode.index;
 }
 
@@ -298,7 +295,7 @@
 - (void)setupPaths {
     
     self.foregroundLinePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(kGuidedViewPadding, (self.frame.size.height / 3) + 1, 1, 3) byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(kGuidedViewPadding / 2, kGuidedViewPadding / 2)];
-    self.backgroundLinePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(kGuidedViewPadding, self.frame.size.height / 3, self.frame.size.width - kGuidedViewPadding * 2, 5) byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(kGuidedViewPadding / 2, kGuidedViewPadding / 2)];
+    self.backgroundLinePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(kGuidedViewPadding, (self.frame.size.height / 3) + 1, self.frame.size.width - kGuidedViewPadding * 2, 3.5) byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(kGuidedViewPadding / 2, kGuidedViewPadding / 2)];
 }
 
 - (void)setupBackgroundLine {
@@ -549,8 +546,8 @@
 }
 
 - (UIBezierPath *)shapeLayerPathForIndex:(NSInteger)index {
-
-    return [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.backgroundLinePath.bounds.origin.x + index * self.backgroundLinePath.bounds.size.width / (self.numberOfNodes - 1), self.backgroundLinePath.center.y) radius:6 startAngle:DEGREES_TO_RADIANS(270) endAngle:DEGREES_TO_RADIANS(270.01) clockwise:NO];
+    
+    return [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.backgroundLinePath.bounds.origin.x + index * self.backgroundLinePath.bounds.size.width / (self.numberOfNodes - 1), self.backgroundLinePath.center.y) radius:4 startAngle:DEGREES_TO_RADIANS(270) endAngle:DEGREES_TO_RADIANS(270.01) clockwise:NO];
     
 }
 
@@ -560,7 +557,7 @@
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
     NSDictionary *attributes = @{
-                                 NSFontAttributeName:[UIFont systemFontOfSize:10],
+                                 NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Medium" size:9],
                                  NSForegroundColorAttributeName:kBackgroundLineUIColorDefault,
                                  NSParagraphStyleAttributeName: paragraphStyle
                                  };
@@ -610,7 +607,7 @@
     UIGuidedViewNode *newNode = [anim valueForKey:kNewNodeKey];
     UIGuidedViewNode *oldNode = [anim valueForKey:kOldNodeKey];
     BOOL shouldSelect = (BOOL)[[anim valueForKey:kNodeSelection] boolValue];
-
+    
     
     if([self.delegate respondsToSelector:@selector(guidedView:didSingleTransitionFromIndex:toIndex:inDirection:)] && oldNode.index != newNode.index){
         [self.delegate guidedView:self didSingleTransitionFromIndex:oldNode.index toIndex:newNode.index inDirection:direction];
