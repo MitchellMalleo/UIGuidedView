@@ -514,6 +514,8 @@
                     }
                 }
             }
+        } else {
+            self.isAnimating = NO;
         }
     });
     
