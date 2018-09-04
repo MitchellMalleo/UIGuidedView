@@ -11,8 +11,8 @@
 @class UIGuidedView;
 
 typedef NS_ENUM(NSInteger, UIGuidedViewAnimationDirection){
-    UIGuidedViewAnimationDirectionForwards = 0,
-    UIGuidedViewAnimationDirectionBackwards = 1
+  UIGuidedViewAnimationDirectionForwards = 0,
+  UIGuidedViewAnimationDirectionBackwards = 1
 };
 
 @protocol UIGuidedViewDelegate <NSObject>
