@@ -10,7 +10,7 @@ UIGuidedView is a simple control designed for guiding a user through a controlle
 
 - ARC
 - iOS 5.0+
-- xCode 7.0+
+- Xcode 7.0+
 
 ## Installation
 
