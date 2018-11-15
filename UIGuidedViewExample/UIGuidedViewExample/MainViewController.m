@@ -63,6 +63,23 @@
   return 5;
 }
 
+- (NSString *)guidedView:(UIGuidedView *)guidedView titleForInnerLabelAtIndex:(NSInteger)index {
+  NSString *title = @"";
+
+  switch (index) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+      title = [NSString stringWithFormat:@"%li", index];
+      break;
+    default:
+      title = @"✓";
+  }
+
+  return title;
+}
+
 - (NSString *)guidedView:(UIGuidedView *)guidedView titleForNodeAtIndex:(NSInteger)index {
   NSString *title = @"";
 

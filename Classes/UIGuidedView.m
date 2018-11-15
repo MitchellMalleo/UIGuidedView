@@ -11,6 +11,10 @@
 
 #define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
 
+#define kTitleDefaultFontSize 9
+#define kInnerDefaultFontSize 10
+#define kDefaultFont @"HelveticaNeue-Medium"
+
 #define kBackgroundLineUIColorDefault [UIColor colorWithRed:215.0/255.0 green:215.0/255.0 blue:215.0/255.0 alpha:1.0]
 #define kNodeUIColorDefault [UIColor colorWithRed:103.0/255.0 green:142.0/255.0 blue:180.0/255.0 alpha:1.0]
 #define kNodeSpacing self.backgroundLinePath.bounds.origin.x + i * self.backgroundLinePath.bounds.size.width / (self.numberOfNodes - 1)
@@ -31,7 +35,7 @@
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) CAShapeLayer *backgroundLayer;
 @property (strong, nonatomic) UIBezierPath *backgroundPath;
-
+@property (strong, nonatomic) UILabel *innerNodeLabel;
 @property (strong, nonatomic) CAShapeLayer *layer;
 @property (strong, nonatomic) UIBezierPath *path;
 @property (strong, nonatomic) UIBezierPath *retractPath;
@@ -48,6 +52,7 @@
 
   if(self){
     self.titleLabel = [UILabel new];
+    self.innerNodeLabel = [UILabel new];
   }
 
   return self;
@@ -57,9 +62,11 @@
   if(displaying){
     self.layer.path = self.path.CGPath;
     self.layer.lineWidth = kNodeRadius;
+    self.innerNodeLabel.hidden = NO;
   } else {
     self.layer.lineWidth = 0;
     self.layer.path = self.retractPath.CGPath;
+    self.innerNodeLabel.hidden = YES;
   }
 
   _displaying = displaying;
@@ -293,6 +300,8 @@
   self.selectedTitleColor = [UIColor grayColor];
   self.unselectedTitleColor = kBackgroundLineUIColorDefault;
   self.lineColor = kNodeUIColorDefault;
+  self.titleFont = [UIFont fontWithName:kDefaultFont size:kTitleDefaultFontSize];
+  self.innerTitleFont = [UIFont fontWithName:kDefaultFont size:kTitleDefaultFontSize];
 }
 
 - (void)setupPaths {
@@ -364,7 +373,6 @@
     node.view = self;
 
     if([self.dataSource respondsToSelector:@selector(guidedView:titleForNodeAtIndex:)] && [self.dataSource guidedView:self titleForNodeAtIndex:i] != nil){
-
       node.titleLabel = [self titleLabelForPath:path title:[self.dataSource guidedView:self titleForNodeAtIndex:i] atIndex:i];
       [self addSubview:node.titleLabel];
     }
@@ -380,6 +388,11 @@
 
     [self.layer addSublayer:node.layer];
     [self.layer addSublayer:backgroundCircle];
+
+    if([self.dataSource respondsToSelector:@selector(guidedView:titleForInnerLabelAtIndex:)] && [self.dataSource guidedView:self titleForNodeAtIndex:i] != nil) {
+      node.innerNodeLabel = [self innerNodeLabelForPath:path title:[self.dataSource guidedView:self titleForInnerLabelAtIndex:i] atIndex:i];
+      [self addSubview:node.innerNodeLabel];
+    }
   }
 }
 
@@ -547,24 +560,39 @@
                                       endAngle:DEGREES_TO_RADIANS(270.01) clockwise:NO];
 }
 
-- (UILabel *)titleLabelForPath:(UIBezierPath *)path title:(NSString *)title atIndex:(NSInteger)index {
-  NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
-  paragraphStyle.alignment = NSTextAlignmentCenter;
-
-  NSDictionary *attributes = @{
-                               NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Medium" size:9],
-                               NSForegroundColorAttributeName:kBackgroundLineUIColorDefault,
-                               NSParagraphStyleAttributeName: paragraphStyle
-                               };
-
+- (UILabel *)innerNodeLabelForPath:(UIBezierPath *)path title:(NSString *)title atIndex:(NSInteger)index {
   NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:title
-                                                                                     attributes:attributes];
+                                                                                     attributes:[self attributesForLabelWithFont: self.innerTitleFont]];
+
+  UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.backgroundLinePath.center.y - 0.5,
+                                                                  self.backgroundLinePath.bounds.size.width / self.numberOfNodes * 1.1,
+                                                                  10)];
+  titleLabel.center = CGPointMake(path.center.x, titleLabel.frame.origin.y);
+  titleLabel.attributedText = attributedText;
+
+  return titleLabel;
+}
+
+- (UILabel *)titleLabelForPath:(UIBezierPath *)path title:(NSString *)title atIndex:(NSInteger)index {
+  NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:title
+                                                                                     attributes:[self attributesForLabelWithFont: self.titleFont]];
 
   UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.backgroundLinePath.bounds.origin.y + kUIGuidedViewNodeTitleLabelYValue, self.backgroundLinePath.bounds.size.width / self.numberOfNodes * 1.1, 10)];
   titleLabel.center = CGPointMake(path.center.x, titleLabel.frame.origin.y);
   titleLabel.attributedText = attributedText;
 
   return titleLabel;
+}
+
+- (NSDictionary<NSAttributedStringKey, id> *)attributesForLabelWithFont:(UIFont *)font {
+  NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
+  paragraphStyle.alignment = NSTextAlignmentCenter;
+
+  return @{
+           NSFontAttributeName: font,
+           NSForegroundColorAttributeName: self.backgroundLineColor,
+           NSParagraphStyleAttributeName: paragraphStyle
+           };
 }
 
 #pragma mark - CABasicAnimationDelegate

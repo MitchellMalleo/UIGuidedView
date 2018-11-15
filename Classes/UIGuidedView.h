@@ -32,6 +32,7 @@ typedef NS_ENUM(NSInteger, UIGuidedViewAnimationDirection){
 
 @optional
 - (NSString *)guidedView:(UIGuidedView *)guidedView titleForNodeAtIndex:(NSInteger)index;
+- (NSString *)guidedView:(UIGuidedView *)guidedView titleForInnerLabelAtIndex:(NSInteger)index;
 
 @end
 
@@ -41,6 +42,8 @@ typedef NS_ENUM(NSInteger, UIGuidedViewAnimationDirection){
 @property (strong, nonatomic) UIColor *backgroundLineColor;
 @property (strong, nonatomic) UIColor *selectedTitleColor;
 @property (strong, nonatomic) UIColor *unselectedTitleColor;
+@property (strong, nonatomic) UIFont *titleFont;
+@property (strong, nonatomic) UIFont *innerTitleFont;
 
 @property (assign, nonatomic) float animationSpeed;
 @property (assign, nonatomic) BOOL shouldHideTitlesForUnselectedNodes;
