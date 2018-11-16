@@ -110,7 +110,10 @@
 @property (strong, nonatomic) NSMutableArray *animationArray;
 @property (nonatomic) BOOL isAnimating;
 @property (nonatomic) BOOL didFailValidation;
+@property (nonatomic) BOOL didDrawRect;
+@property (nonatomic) BOOL didSetupUI;
 @property (nonatomic) NSInteger numberOfNodes;
+@property (nonatomic) NSInteger defaultSelectedNodeIndex;
 
 @property (strong, nonatomic) NSMutableArray <__kindof UIGuidedViewNode *> *nodes;
 
@@ -128,7 +131,6 @@
   if(self){
     self.selectedNode = nil;
     [self setupDefaults];
-    [self setupUI];
   }
 
   return self;
@@ -140,17 +142,22 @@
   if(self){
     self.selectedNode = nil;
     [self setupDefaults];
-    [self setupUI];
   }
 
   return self;
 }
 
-- (void)setupUI{
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self setupPaths];
-    [self setupBackgroundLine];
-  });
+- (void)setupUI {
+  if (self.didSetupUI) { return; }
+  self.didSetupUI = YES;
+  [self setupPaths];
+  [self setupBackgroundLine];
+  [self setupNodes];
+  [self setupForegroundLine];
+
+  if (self.selectedNode.index != self.defaultSelectedNodeIndex){
+    [self selectNodeAtIndex:self.defaultSelectedNodeIndex];
+  }
 }
 
 #pragma mark - Custom Accessors
@@ -225,10 +232,17 @@
     [NSException raise:@"Invalid number of nodes" format:@"There must be at least two nodes in a UIGuidedView"];
   }
 
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self setupNodes];
-    [self setupForegroundLine];
-  });
+  if (self.didDrawRect && self.dataSource != nil) {
+    [self setupUI];
+  }
+}
+
+- (void)drawRect:(CGRect)rect {
+  [super drawRect:rect];
+  self.didDrawRect = YES;
+  if (self.dataSource != nil) {
+    [self setupUI];
+  }
 }
 
 #pragma mark - Public Methods
@@ -238,13 +252,40 @@
 }
 
 
-- (void)selectNodeAtIndex:(NSInteger)index {
+- (void)animateToNodeAtIndex:(NSInteger)index {
   if([self errorExistsInNodeArrayAt: index]){
+    self.defaultSelectedNodeIndex = index;
     return;
   }
 
   if(!self.isAnimating){
     [self validateAnimationToNode:[self.nodes objectAtIndex:index] fromNode:self.selectedNode];
+  }
+}
+
+- (void)selectNodeAtIndex:(NSInteger)index {
+  if([self errorExistsInNodeArrayAt: index]){
+    self.defaultSelectedNodeIndex = index;
+    return;
+  }
+
+  UIGuidedViewNode *node = [self.nodes objectAtIndex: index];
+  node.selected = YES;
+  self.foregroundLinePath = [self pathFromBaseNodeToNode: node];
+  self.selectedNode = node;
+
+  for(NSInteger i = 0; i <= index; i++) {
+    UIGuidedViewNode *nodeInSelectRange = [self.nodes objectAtIndex: i];
+    if(!nodeInSelectRange.displaying) {
+      nodeInSelectRange.displaying = YES;
+    }
+  }
+
+  for(NSInteger i = self.nodes.count - 1; i > index; i--) {
+    UIGuidedViewNode *nodeInDeselectRange = [self.nodes objectAtIndex: i];
+    if(nodeInDeselectRange.displaying) {
+      nodeInDeselectRange.displaying = NO;
+    }
   }
 }
 
@@ -292,7 +333,10 @@
   self.isAnimating = NO;
   self.didFailValidation = NO;
   self.touchable = YES;
+  self.didSetupUI = NO;
+  self.didDrawRect = NO;
   self.animationSpeed = 1.0f;
+  self.defaultSelectedNodeIndex = 0;
   self.animationArray = [NSMutableArray new];
   self.nodes = [NSMutableArray new];
   self.shouldHideTitlesForUnselectedNodes = NO;
@@ -305,9 +349,9 @@
 }
 
 - (void)setupPaths {
-  self.foregroundLinePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(kGuidedViewPadding, (self.frame.size.height / 3) + 1, 1, 3)
+  self.foregroundLinePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(kGuidedViewPadding, (self.bounds.size.height / 3) + 1, 1, 3)
                                                   byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(kGuidedViewPadding / 2, kGuidedViewPadding / 2)];
-  self.backgroundLinePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(kGuidedViewPadding, (self.frame.size.height / 3) + 1, self.frame.size.width - kGuidedViewPadding * 2, 3.5)
+  self.backgroundLinePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(kGuidedViewPadding, (self.bounds.size.height / 3) + 1, self.bounds.size.width - kGuidedViewPadding * 2, 3.5)
                                                   byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(kGuidedViewPadding / 2, kGuidedViewPadding / 2)];
 }
 
@@ -337,10 +381,6 @@
   self.foregroundLine.shouldRasterize = YES;
 
   [self.layer addSublayer:self.foregroundLine];
-}
-
-- (void)setIsAnimating:(BOOL)isAnimating{
-  _isAnimating = isAnimating;
 }
 
 - (void)setupNodes {

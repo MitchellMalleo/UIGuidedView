@@ -51,6 +51,7 @@ typedef NS_ENUM(NSInteger, UIGuidedViewAnimationDirection){
 
 - (NSInteger)selectedNodeIndex;
 - (void)selectNodeAtIndex:(NSInteger)index;
+- (void)animateToNodeAtIndex:(NSInteger)index;
 
 - (void)reloadNodeTitles;
 - (void)reloadNodeTitleAtIndex:(NSInteger)index;
